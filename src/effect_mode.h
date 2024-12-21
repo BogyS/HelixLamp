@@ -277,11 +277,11 @@ namespace EffectMode
     {
         // Number of loops is increased based on number of pixels.
         // Fade ammount drops as pixels increase.
-        static uint8_t appAmmount = (NUM_LEDS / 32);
+        static uint8_t appAmmount = (NUM_LEDS / 4);
         for (uint8_t i = 0; i < appAmmount; i++)
         {
             static uint16_t lastPixel = 0;
-            fadeToBlackBy(leds, NUM_LEDS, 32 / appAmmount); // was 32
+            fadeToBlackBy(leds, NUM_LEDS, 12); // was 32
             leds[lastPixel] = CHSV(random8(HUE_BLUE, HUE_PURPLE), 255, 255);
             lastPixel = random16(NUM_LEDS);
             leds[lastPixel] = CRGB::White;

@@ -97,6 +97,8 @@ void listInfoLeds()
         leds[(NUM_LEDS - i) % NUM_LEDS] = CRGB::Blue;
     FastLED.show(); // Apply the changes
     delay(2000);
+    FastLED.clear(); // Set all LEDs to black (off)
+    FastLED.show(); // Apply the changes
 }
 
 void listInfoPosLeds()
@@ -108,7 +110,9 @@ void listInfoPosLeds()
     i = list[listIdx]->Get() + 1;
     leds[(NUM_LEDS - i) % NUM_LEDS] = CRGB::Blue;
     FastLED.show(); // Apply the changes
-    delay(1000);
+    delay(1500);
+    FastLED.clear(); // Set all LEDs to black (off)
+    FastLED.show(); // Apply the changes
 }
 
 void setRandomList()
@@ -143,6 +147,7 @@ void handleClick()
     digitalWrite(LED_BUILTIN, ledOn);
     list[listIdx]->Next();
     listPosInfo();
+    listInfoPosLeds();
 }
 
 void handleDoubleClick()
