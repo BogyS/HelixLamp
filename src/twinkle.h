@@ -380,7 +380,7 @@ public:
         TwinkleFoxMode::drawTwinkles();
         FastLED.show();
     }
-    String Name() const { return "TwinkleFox"; }
+    const __FlashStringHelper* Name() const { return F("TwinkleFox"); }
 };
 
 #endif // TwinkleFox_h

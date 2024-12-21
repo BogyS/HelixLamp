@@ -58,7 +58,7 @@ public:
         FastLED.show();
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
-    String Name() const { return "Pride"; }
+    const __FlashStringHelper* Name() const { return F("Pride"); }
 };
 
 class Test : public Effect
@@ -73,7 +73,7 @@ public:
         FastLED.show();
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
-    String Name() const { return "Test"; }
+    const __FlashStringHelper* Name() const { return F("Test"); }
 };
 
 #endif // Pride2015_h

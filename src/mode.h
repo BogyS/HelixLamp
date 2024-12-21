@@ -22,14 +22,14 @@ public:
         counter = random8(this->Max());
         return counter;
     }
-    virtual void Update() {}
+    virtual void Update() = 0;
     virtual uint8_t Get() const { return counter; }
-    virtual uint8_t Max() const { return 0; }
+    virtual uint8_t Max() const = 0;
     virtual void Set(uint8_t val)
     {
         counter = val % this->Max();
     }
-    virtual String Name() const { return ""; }
+    virtual const __FlashStringHelper* Name() const { return F("!"); };
     virtual void Init() { counter = 0; }
 };
 
@@ -38,9 +38,9 @@ class Effect
 public:
     virtual ~Effect() {}
 
-    virtual void Init() {}
-    virtual void Update() {}
-    virtual String Name() const { return ""; }
+    virtual void Init() {};
+    virtual void Update() {};
+    virtual const __FlashStringHelper* Name() const { return F("?"); };
 };
 
 class EffectList : public Mode
@@ -72,7 +72,7 @@ public:
         Mode::Set(val);
         this->effects[counter]->Init();
     }
-    String Name() const
+    const __FlashStringHelper* Name() const
     {
         return this->effects[this->counter]->Name();
     }

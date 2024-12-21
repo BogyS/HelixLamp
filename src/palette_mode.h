@@ -201,36 +201,36 @@ public:
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
     uint8_t Max() const { return 12; }
-    String Name() const
+    const __FlashStringHelper* Name() const
     {
         switch (this->counter)
         {
         case 0:
-            return "Rainbow";
+            return F("Rainbow");
         case 1:
-            return "Landscape";
+            return F("Landscape");
         case 2:
-            return "Gummy Bears";
+            return F("Gummy Bears");
         case 3:
-            return "BHW3";
+            return F("BHW3");
         case 4:
-            return "BlacK Magenta Red";
+            return F("BlacK Magenta Red");
         case 5:
-            return "BlacK Blue Magenta White";
+            return F("BlacK Blue Magenta White");
         case 6:
-            return "Sunset Real";
+            return F("Sunset Real");
         case 7:
-            return "Lava";
+            return F("Lava");
         case 8:
-            return "GMT Dry Wet";
+            return F("GMT Dry Wet");
         case 9:
-            return "GR65 Hult";
+            return F("GR65 Hult");
         case 10:
-            return "Departure";
+            return F("Departure");
         case 11:
-            return "Analogous";
+            return F("Analogous");
         default:
-            return "?";
+            return F("?");
         }
     }
 };

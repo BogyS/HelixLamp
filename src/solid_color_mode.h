@@ -67,9 +67,9 @@ public:
   }
 
   uint8_t Max() const { return 18; }
-  String Name() const 
+  const __FlashStringHelper* Name() const 
   {
-    return String("Color : ") + String( this->counter ); 
+    return F("*"); 
   }
 };
 

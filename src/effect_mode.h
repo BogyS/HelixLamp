@@ -309,7 +309,7 @@ namespace EffectMode
     } // end_twoDots
 
     fnPtrVoid efectsArray[] = {twoDots, fillAndCC, blinkyblink2, spewFour, spew, confetti_GB, rainbow, applause, confetti, sinelon, juggle};
-    const char* efectsNames[] = {"Two Dots", "Fill And CC", "Bblinky blink", "Spew Four", "Spew", "Confetti GB", "Rainbow", "Applause", "Confetti", "Sinelon", "Juggle"};
+    // const char* efectsNames[] = {"Two Dots", "Fill And CC", "Bblinky blink", "Spew Four", "Spew", "Confetti GB", "Rainbow", "Applause", "Confetti", "Sinelon", "Juggle"};
 } // EffectMode
 
 class Efects : public Mode
@@ -324,15 +324,40 @@ public:
         {
             EffectMode::gHue++;
         }
-        
     }
     uint8_t Max() const
     {
         return ARRAY_SIZE(EffectMode::efectsArray);
     }
-    String Name() const
+    const __FlashStringHelper* Name() const
     {
-        return EffectMode::efectsNames[counter];
+        switch (counter)
+        {
+        case 0:
+            return F("Two Dots");
+        case 1:
+            return F("Fill And CC");
+        case 2:
+            return F("Bblinky blink");
+        case 3:
+            return F("Spew Four");
+        case 4:
+            return F("Spew");
+        case 5:
+            return F("Confetti GB");
+        case 6:
+            return F("Rainbow");
+        case 7:
+            return F("Applause");
+        case 8:
+            return F("Confetti");
+        case 9:
+            return F("Sinelon");
+        case 10:
+            return F("Juggle");
+        default:
+            return F("Unknown Effect");
+        }
     }
 };
 

@@ -47,7 +47,22 @@ SolidColor solidColor;
 
 uint8_t listIdx = 0;
 Mode* list[] = {&misc, &palette, &efects, &solidColor};
-const char* listNames[] = {"Misc", "Palette", "Effects", "Solid color"};
+const __FlashStringHelper* listName()
+{
+    switch (listIdx)
+    {
+    case 0:
+        return F("Misc");
+    case 1:
+        return F("Palette");
+    case 2:
+        return F("Effects");
+    case 3:
+        return F("Solid color");
+    default:
+        return F("?");
+    }
+}
 
 void wakeUp()
 {
@@ -82,7 +97,7 @@ void listInfo()
     Serial.print(F(" - max: "));
     Serial.print(list[listIdx]->Max());
     Serial.print(F(" - name: "));
-    Serial.println(listNames[listIdx]);
+    Serial.println(listName());
     listPosInfo();
 }
 
@@ -110,7 +125,7 @@ void listInfoPosLeds()
     uint8_t p = list[listIdx]->Get();
     uint8_t m = list[listIdx]->Max();
     for (i = 0; i < m; i++)
-      leds[(NUM_LEDS - 1 - i) % NUM_LEDS] = ( i == p ) ? CRGB::Red : CRGB::Blue;
+        leds[(NUM_LEDS - 1 - i) % NUM_LEDS] = (i == p) ? CRGB::Red : CRGB::Blue;
     FastLED.show(); // Apply the changes
     delay(1500);
     FastLED.clear(); // Set all LEDs to black (off)
@@ -184,8 +199,9 @@ void handleLongPressStart()
 
 void setup()
 {
-    delay(1000); // power-up safety delay
-    Serial.begin(115200);
+    delay(500); // power-up safety delay
+    Serial.begin(9600);
+    delay(500);
 
     btn.attachClick(handleClick);
     btn.attachDoubleClick(handleDoubleClick);
@@ -212,7 +228,7 @@ void setup()
     list[listIdx]->Set(EEPROM.read(2));
 
     Serial.println(F("FastLED started"));
-    Serial.println(F("Ver 24.12.22.00"));
+    Serial.println(F("Ver 24.12.22.01"));
     listInfo();
     listInfoLeds();
 }
