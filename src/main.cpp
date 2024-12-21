@@ -6,6 +6,7 @@
 #include <avr/sleep.h>
 #include <FastLED.h>
 #include <OneButton.h>
+#include <EEPROM.h>
 
 #define LED_PIN 4       // Data pin to connect to the strip.
 #define NUM_LEDS 28     // Number of LED's.
@@ -163,6 +164,11 @@ void handleLongPressStart()
     delay(500);
     ledOn = false;
     digitalWrite(LED_BUILTIN, ledOn);
+    //save data
+    EEPROM.update(0, 0);        // random
+    EEPROM.update(1, listIdx);
+    EEPROM.update(2, list[listIdx]->Get());
+
     fallAsleep();
 }
 
@@ -185,9 +191,20 @@ void setup()
     for (uint8_t i = 0; i < ARRAY_SIZE(list); i++)
         list[i]->Init();
 
+    // at first run uncomment this for lines for initializing the eeprom data
+    //EEPROM.update(0, 24); // random
+    //EEPROM.update(1, 0);  // list
+    //EEPROM.update(2, 0);  // pos
+
+    //read data
+    randomList = (EEPROM.read(0) == 24);
+    listIdx = EEPROM.read(1) % ARRAY_SIZE(list);
+    list[listIdx]->Set( EEPROM.read(2) );
+
     Serial.println(F("FastLED started"));
-    Serial.println(F("Ver 24.12.21.20"));
+    Serial.println(F("Ver 24.12.22.00"));
     listInfo();
+    listInfoLeds();
 }
 
 void loop()
