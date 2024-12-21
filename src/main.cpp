@@ -93,12 +93,12 @@ void listInfoLeds()
     for (i = 0; i <= listIdx; i++)
         leds[i % NUM_LEDS] = CRGB::Green;
     uint8_t m = list[listIdx]->Max();
-    for (i = 1; i <= m; i++)
-        leds[(NUM_LEDS - i) % NUM_LEDS] = CRGB::Blue;
+    for (i = 0; i < m; i++)
+        leds[(NUM_LEDS - 1 - i) % NUM_LEDS] = CRGB::Blue;
     FastLED.show(); // Apply the changes
     delay(2000);
     FastLED.clear(); // Set all LEDs to black (off)
-    FastLED.show(); // Apply the changes
+    FastLED.show();  // Apply the changes
 }
 
 void listInfoPosLeds()
@@ -107,18 +107,21 @@ void listInfoPosLeds()
     uint8_t i;
     for (i = 0; i <= listIdx; i++)
         leds[i % NUM_LEDS] = CRGB::Green;
-    i = list[listIdx]->Get() + 1;
-    leds[(NUM_LEDS - i) % NUM_LEDS] = CRGB::Blue;
+    uint8_t p = list[listIdx]->Get();
+    uint8_t m = list[listIdx]->Max();
+    for (i = 0; i < m; i++)
+      leds[(NUM_LEDS - 1 - i) % NUM_LEDS] = ( i == p ) ? CRGB::Red : CRGB::Blue;
     FastLED.show(); // Apply the changes
     delay(1500);
     FastLED.clear(); // Set all LEDs to black (off)
-    FastLED.show(); // Apply the changes
+    FastLED.show();  // Apply the changes
 }
 
 void setRandomList()
 {
     listIdx = random8(ARRAY_SIZE(list));
     list[listIdx]->Rnd();
+    FastLED.setBrightness(BRIGHTNESS);
     listInfo();
     listInfoPosLeds();
     ledOn = !ledOn;
@@ -133,6 +136,7 @@ void resetRandomList()
     for (uint8_t i = 0; i < ARRAY_SIZE(list); i++)
         list[i]->Init();
     listIdx = 0;
+    FastLED.setBrightness(BRIGHTNESS);
     listInfo();
     ledOn = false;
     digitalWrite(LED_BUILTIN, ledOn);
@@ -155,6 +159,7 @@ void handleDoubleClick()
     resetRandomList();
     Serial.println(F("- DoubleClick!"));
     listIdx = (listIdx + 1) % ARRAY_SIZE(list);
+    FastLED.setBrightness(BRIGHTNESS);
     listInfo();
     listInfoLeds();
     list[listIdx]->Init();
@@ -169,8 +174,8 @@ void handleLongPressStart()
     delay(500);
     ledOn = false;
     digitalWrite(LED_BUILTIN, ledOn);
-    //save data
-    EEPROM.update(0, 0);        // random
+    // save data
+    EEPROM.update(0, 0); // random
     EEPROM.update(1, listIdx);
     EEPROM.update(2, list[listIdx]->Get());
 
@@ -197,14 +202,14 @@ void setup()
         list[i]->Init();
 
     // at first run uncomment this for lines for initializing the eeprom data
-    //EEPROM.update(0, 24); // random
-    //EEPROM.update(1, 0);  // list
-    //EEPROM.update(2, 0);  // pos
+    // EEPROM.update(0, 24); // random
+    // EEPROM.update(1, 0);  // list
+    // EEPROM.update(2, 0);  // pos
 
-    //read data
+    // read data
     randomList = (EEPROM.read(0) == 24);
     listIdx = EEPROM.read(1) % ARRAY_SIZE(list);
-    list[listIdx]->Set( EEPROM.read(2) );
+    list[listIdx]->Set(EEPROM.read(2));
 
     Serial.println(F("FastLED started"));
     Serial.println(F("Ver 24.12.22.00"));
@@ -223,7 +228,7 @@ void loop()
     btn.tick();
     if (randomList)
     {
-        EVERY_N_MILLISECONDS(5000)
+        EVERY_N_MILLISECONDS(7000)
         {
             setRandomList();
         }
