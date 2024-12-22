@@ -1,6 +1,9 @@
 #ifndef PALETTE_MODE_H_
 #define PALETTE_MODE_H_
 
+#include "led_config.h"
+#include "mode.h"
+
 namespace PaletteMode
 {
     CRGBPalette16 currentPalette;

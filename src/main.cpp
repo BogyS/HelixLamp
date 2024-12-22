@@ -4,20 +4,12 @@
 // 4th. List (solid color mode): 18 effects
 
 #include <avr/sleep.h>
-#include <FastLED.h>
 #include <OneButton.h>
 #include <EEPROM.h>
 
-#define LED_PIN 4       // Data pin to connect to the strip.
-#define NUM_LEDS 28     // Number of LED's.
-#define BRIGHTNESS 250  // maximum brightness (250 on 28LEDs = 560mA max current)
-#define LED_TYPE WS2812 // Using APA102, WS2812, WS2801.
-#define COLOR_ORDER GRB // It's GRB for WS2812 and BGR for APA102.
-#define UPDATES_PER_SECOND 100
-struct CRGB leds[NUM_LEDS];
+#include "led_config.h"
+#include "mode.h"
 
-#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
-typedef void (*fnPtrVoid)();
 
 #include "solid_color_mode.h"
 #include "effect_mode.h"
@@ -27,11 +19,13 @@ typedef void (*fnPtrVoid)();
 #include "fire.h"
 #include "twinkle.h"
 
-OneButton btn(2); // create button object that attach to pin 2
-static uint8_t intNum = digitalPinToInterrupt(2);
+#define BTN_PIN 2       // Button pin.
+OneButton btn(BTN_PIN); // create button object that attach to pin 2
 
 bool ledOn = false;
-volatile bool justWokeUp = false;
+volatile bool isSleeping = false;
+volatile bool isClicking = false;
+volatile bool randomList = true;
 
 Pacifica pacifica;
 Pride pride;
@@ -64,23 +58,10 @@ const __FlashStringHelper* listName()
     }
 }
 
-void wakeUp()
+void btnISR()
 {
-    justWokeUp = true;
+    btn.tick();                           // Read pin and update FSM
 }
-
-void fallAsleep()
-{
-    sleep_enable();                       // Enabling sleep mode
-    attachInterrupt(intNum, wakeUp, LOW); // attaching a interrupt to pin D2
-    set_sleep_mode(SLEEP_MODE_PWR_SAVE);  // Setting the sleep mode, in our case full sleep
-    sleep_cpu();                          // activating sleep mode
-    Serial.println(F("Just Woke Up!"));   // next line of code executed after the interrupt
-    sleep_disable();
-    detachInterrupt(intNum);
-}
-
-bool randomList = true;
 
 void listPosInfo()
 {
@@ -160,6 +141,9 @@ void resetRandomList()
 // Handler function for button:
 void handleClick()
 {
+    if( isSleeping || isClicking )
+      return;   // do nothing in sleep mode
+    isClicking = true;
     resetRandomList();
     Serial.println(F("- Click!"));
     ledOn = !ledOn;
@@ -167,10 +151,14 @@ void handleClick()
     list[listIdx]->Next();
     listPosInfo();
     listInfoPosLeds();
+    isClicking = false;
 }
 
 void handleDoubleClick()
 {
+    if( isSleeping || isClicking )
+      return;   // do nothing in sleep mode
+    isClicking = true;
     resetRandomList();
     Serial.println(F("- DoubleClick!"));
     listIdx = (listIdx + 1) % ARRAY_SIZE(list);
@@ -178,10 +166,27 @@ void handleDoubleClick()
     listInfo();
     listInfoLeds();
     list[listIdx]->Init();
+    isClicking = false;
+}
+
+void handleMultiClick()
+{
+    if( isSleeping || isClicking )
+      return;           // do nothing in sleep mode
+    isClicking = true;
+    Serial.println(F("- MultiClick!"));
+    randomList = true;  //start random
+    isClicking = false;
 }
 
 void handleLongPressStart()
 {
+    if( isSleeping || isClicking )
+      return;   // do nothing in sleep mode
+     // Disable the current interrupt
+    detachInterrupt(digitalPinToInterrupt(BTN_PIN));
+    isClicking = true;
+    isSleeping = true;
     Serial.println(F("- LongPressStart!"));
     Serial.println(F("Entering sleep mode..."));
     FastLED.clear();
@@ -190,25 +195,40 @@ void handleLongPressStart()
     ledOn = false;
     digitalWrite(LED_BUILTIN, ledOn);
     // save data
-    EEPROM.update(0, 0); // random
+    EEPROM.update(0, randomList ? 1 : 0); // random
     EEPROM.update(1, listIdx);
     EEPROM.update(2, list[listIdx]->Get());
 
-    fallAsleep();
+    sleep_enable();                       // Enabling sleep mode
+    set_sleep_mode(SLEEP_MODE_PWR_SAVE);  // Setting the sleep mode, in our case full sleep
+    // Reconfigure the interrupt for FALLING edge to wake up
+    attachInterrupt(digitalPinToInterrupt(BTN_PIN), btnISR, FALLING);
+    sleep_cpu();                          // activating sleep mode
+    // Restore interrupt to CHANGE mode
+    detachInterrupt(digitalPinToInterrupt(BTN_PIN));
+    Serial.println(F("Just Woke Up!"));   // next line of code executed after the interrupt
+    sleep_disable();
+    attachInterrupt(digitalPinToInterrupt(BTN_PIN), btnISR, CHANGE);
+    isClicking = false;
 }
 
 void setup()
 {
-    delay(500); // power-up safety delay
+    delay(1000); // power-up safety delay
     Serial.begin(9600);
-    delay(500);
+
+    pinMode(LED_BUILTIN, OUTPUT);
+    // pin mode i
+    //pinMode(BTN_PIN, INPUT_PULLUP);
+    // attaching a interrupt to pin D2
+    attachInterrupt(digitalPinToInterrupt(BTN_PIN), btnISR, CHANGE);
 
     btn.attachClick(handleClick);
     btn.attachDoubleClick(handleDoubleClick);
-    btn.attachLongPressStart(handleLongPressStart);
+    btn.attachMultiClick(handleMultiClick);
     btn.setClickMs(500);
-
-    pinMode(LED_BUILTIN, OUTPUT);
+    btn.attachLongPressStart(handleLongPressStart);
+    
 
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(BRIGHTNESS);
@@ -217,29 +237,24 @@ void setup()
     for (uint8_t i = 0; i < ARRAY_SIZE(list); i++)
         list[i]->Init();
 
-    // at first run uncomment this for lines for initializing the eeprom data
-    // EEPROM.update(0, 24); // random
-    // EEPROM.update(1, 0);  // list
-    // EEPROM.update(2, 0);  // pos
-
     // read data
-    randomList = (EEPROM.read(0) == 24);
+    randomList = (EEPROM.read(0) == 1);
     listIdx = EEPROM.read(1) % ARRAY_SIZE(list);
     list[listIdx]->Set(EEPROM.read(2));
 
     Serial.println(F("FastLED started"));
-    Serial.println(F("Ver 24.12.22.01"));
+    Serial.println(F("Ver 24.12.22.12"));
     listInfo();
     listInfoLeds();
 }
 
 void loop()
 {
-    if (justWokeUp)
+    if (isSleeping)
     {
-        Serial.println(F("loop: Just Woke Up!"));
+        Serial.println(F("Wake info:"));
         listInfo();
-        justWokeUp = false;
+        isSleeping = false;
     }
     btn.tick();
     if (randomList)

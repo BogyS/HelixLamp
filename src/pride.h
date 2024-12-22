@@ -1,8 +1,9 @@
 #ifndef Pride2015_h
 #define Pride2015_h
 
-// #include "FastLED.h"
+#include "led_config.h"
 #include "mode.h"
+
 // Animated, ever-changing rainbows.
 // by Mark Kriegsman
 

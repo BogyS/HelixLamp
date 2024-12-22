@@ -1,6 +1,7 @@
 #ifndef Fire_2012_
 #define Fire_2012_
 
+#include "led_config.h"
 #include "mode.h"
 
 // Fire2012 by Mark Kriegsman, July 2012

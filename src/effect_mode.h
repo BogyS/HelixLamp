@@ -1,6 +1,9 @@
 #ifndef EFFECT_MODE_H_
 #define EFFECT_MODE_H_
 
+#include "led_config.h"
+#include "mode.h"
+
 namespace EffectMode
 {
     uint8_t gHue = 0; // rotating "base color" used by many of the patterns

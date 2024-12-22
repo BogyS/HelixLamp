@@ -1,6 +1,7 @@
 #ifndef TwinkleFox_h
 #define TwinkleFox_h
 
+#include "led_config.h"
 #include "mode.h"
 
 namespace TwinkleFoxMode

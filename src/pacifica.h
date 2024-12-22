@@ -1,6 +1,7 @@
 #ifndef Pacifica_H_
 #define Pacifica_H_
 
+#include "led_config.h"
 #include "mode.h"
 
 //  "Pacifica"

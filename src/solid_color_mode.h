@@ -1,6 +1,7 @@
 #ifndef SOLID_COLOR_MODE_H_
 #define SOLID_COLOR_MODE_H_
 
+#include "led_config.h"
 #include "mode.h"
 
 class SolidColor : public Mode
@@ -68,7 +69,10 @@ public:
     uint8_t Max() const { return 18; }
     const __FlashStringHelper* Name() const
     {
-        return F("*");
+        if (this->counter % 2 == 0)
+          return F("*.*.*");
+        else
+          return F("*****");
     }
 };
 
