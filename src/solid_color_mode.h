@@ -69,6 +69,7 @@ public:
     }
 
     uint8_t Max() const { return 18; }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const
     {
         if (this->counter % 2 == 0)
@@ -76,6 +77,7 @@ public:
         else
           return F("*****");
     }
+#endif
 };
 
 #endif /* SOLID_COLOR_MODE_H_ */

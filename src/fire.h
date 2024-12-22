@@ -101,7 +101,9 @@ class Fire : public Effect
         FastLED.show();       // display this frame
         FastLED.delay(1000 / FRAMES_PER_SECOND);
     }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const { return F("Fire"); }
+#endif
 };
 
 #endif // Fire_2012_

@@ -206,6 +206,7 @@ public:
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
     uint8_t Max() const { return 12; }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const
     {
         switch (this->counter)
@@ -238,6 +239,7 @@ public:
             return F("?");
         }
     }
+#endif
 };
 
 #endif /* PALETTE_MODE_H_ */

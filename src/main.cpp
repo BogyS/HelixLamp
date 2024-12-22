@@ -41,6 +41,7 @@ SolidColor solidColor;
 
 uint8_t listIdx = 0;
 Mode* list[] = {&misc, &palette, &efects, &solidColor};
+#if USE_SERIAL == true
 const __FlashStringHelper* listName()
 {
     switch (listIdx)
@@ -57,6 +58,7 @@ const __FlashStringHelper* listName()
         return F("?");
     }
 }
+#endif
 
 void btnISR()
 {

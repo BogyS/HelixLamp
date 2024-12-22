@@ -61,7 +61,9 @@ public:
         FastLED.show();
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const { return F("Pride"); }
+#endif
 };
 
 class Test : public Effect
@@ -76,7 +78,9 @@ public:
         FastLED.show();
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const { return F("Test"); }
+#endif
 };
 
 #endif // Pride2015_h

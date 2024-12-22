@@ -147,7 +147,9 @@ class Pacifica : public Effect
         FastLED.show();
         FastLED.delay(2000 / UPDATES_PER_SECOND);
     }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const { return F("Pacifica"); }
+#endif
 };
 
 #endif // Pacifica_H_

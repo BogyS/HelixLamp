@@ -334,6 +334,7 @@ public:
     {
         return ARRAY_SIZE(EffectMode::efectsArray);
     }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const
     {
         switch (counter)
@@ -364,6 +365,7 @@ public:
             return F("Unknown Effect");
         }
     }
+#endif
 };
 
 #endif /* EFFECT_MODE_H_ */

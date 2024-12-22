@@ -32,7 +32,9 @@ public:
     {
         counter = val % this->Max();
     }
+#if USE_SERIAL == true
     virtual const __FlashStringHelper* Name() const { return F("!"); };
+#endif
     virtual void Init() { counter = 0; }
 };
 
@@ -43,7 +45,9 @@ public:
 
     virtual void Init() {};
     virtual void Update() {};
+#if USE_SERIAL == true
     virtual const __FlashStringHelper* Name() const { return F("?"); };
+#endif
 };
 
 class EffectList : public Mode
@@ -75,10 +79,12 @@ public:
         Mode::Set(val);
         this->effects[counter]->Init();
     }
+#if USE_SERIAL == true
     const __FlashStringHelper* Name() const
     {
         return this->effects[this->counter]->Name();
     }
+#endif
     void Init()
     {
         Mode::Init();
