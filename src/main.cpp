@@ -7,9 +7,9 @@
 #include <OneButton.h>
 #include <EEPROM.h>
 
+#include "serial_config.h"
 #include "led_config.h"
 #include "mode.h"
-
 
 #include "solid_color_mode.h"
 #include "effect_mode.h"
@@ -60,25 +60,25 @@ const __FlashStringHelper* listName()
 
 void btnISR()
 {
-    btn.tick();                           // Read pin and update FSM
+    btn.tick(); // Read pin and update FSM
 }
 
 void listPosInfo()
 {
-    Serial.print(F(" - Pos idx: "));
-    Serial.print(list[listIdx]->Get());
-    Serial.print(F(" - name: "));
-    Serial.println(list[listIdx]->Name());
+    Serial_print(F(" - Pos idx: "));
+    Serial_print(list[listIdx]->Get());
+    Serial_print(F(" - name: "));
+    Serial_println(list[listIdx]->Name());
 }
 
 void listInfo()
 {
-    Serial.print(F("- List idx: "));
-    Serial.print(listIdx);
-    Serial.print(F(" - max: "));
-    Serial.print(list[listIdx]->Max());
-    Serial.print(F(" - name: "));
-    Serial.println(listName());
+    Serial_print(F("- List idx: "));
+    Serial_print(listIdx);
+    Serial_print(F(" - max: "));
+    Serial_print(list[listIdx]->Max());
+    Serial_print(F(" - name: "));
+    Serial_println(listName());
     listPosInfo();
 }
 
@@ -113,6 +113,17 @@ void listInfoPosLeds()
     FastLED.show();  // Apply the changes
 }
 
+void listInfoRndLeds()
+{
+    FastLED.clear();
+    leds[0] = CRGB::Green;
+    leds[NUM_LEDS / 2] = CRGB::Blue;
+    FastLED.show();
+    delay(1000);
+    FastLED.clear(); // Set all LEDs to black (off)
+    FastLED.show();  // Apply the changes
+}
+
 void setRandomList()
 {
     listIdx = random8(ARRAY_SIZE(list));
@@ -141,11 +152,11 @@ void resetRandomList()
 // Handler function for button:
 void handleClick()
 {
-    if( isSleeping || isClicking )
-      return;   // do nothing in sleep mode
+    if (isSleeping || isClicking)
+        return; // do nothing in sleep mode
     isClicking = true;
     resetRandomList();
-    Serial.println(F("- Click!"));
+    Serial_println(F("- Click!"));
     ledOn = !ledOn;
     digitalWrite(LED_BUILTIN, ledOn);
     list[listIdx]->Next();
@@ -156,11 +167,11 @@ void handleClick()
 
 void handleDoubleClick()
 {
-    if( isSleeping || isClicking )
-      return;   // do nothing in sleep mode
+    if (isSleeping || isClicking)
+        return; // do nothing in sleep mode
     isClicking = true;
     resetRandomList();
-    Serial.println(F("- DoubleClick!"));
+    Serial_println(F("- DoubleClick!"));
     listIdx = (listIdx + 1) % ARRAY_SIZE(list);
     FastLED.setBrightness(BRIGHTNESS);
     listInfo();
@@ -171,24 +182,25 @@ void handleDoubleClick()
 
 void handleMultiClick()
 {
-    if( isSleeping || isClicking )
-      return;           // do nothing in sleep mode
+    if (isSleeping || isClicking)
+        return; // do nothing in sleep mode
     isClicking = true;
-    Serial.println(F("- MultiClick!"));
-    randomList = true;  //start random
+    Serial_println(F("- MultiClick!"));
+    randomList = true; // start random
+    listInfoRndLeds();
     isClicking = false;
 }
 
 void handleLongPressStart()
 {
-    if( isSleeping || isClicking )
-      return;   // do nothing in sleep mode
-     // Disable the current interrupt
+    if (isSleeping || isClicking)
+        return; // do nothing in sleep mode
+                // Disable the current interrupt
     detachInterrupt(digitalPinToInterrupt(BTN_PIN));
     isClicking = true;
     isSleeping = true;
-    Serial.println(F("- LongPressStart!"));
-    Serial.println(F("Entering sleep mode..."));
+    Serial_println(F("- LongPressStart!"));
+    Serial_println(F("Entering sleep mode..."));
     FastLED.clear();
     FastLED.show();
     delay(500);
@@ -199,14 +211,14 @@ void handleLongPressStart()
     EEPROM.update(1, listIdx);
     EEPROM.update(2, list[listIdx]->Get());
 
-    sleep_enable();                       // Enabling sleep mode
-    set_sleep_mode(SLEEP_MODE_PWR_SAVE);  // Setting the sleep mode, in our case full sleep
+    sleep_enable();                      // Enabling sleep mode
+    set_sleep_mode(SLEEP_MODE_PWR_SAVE); // Setting the sleep mode, in our case full sleep
     // Reconfigure the interrupt for FALLING edge to wake up
     attachInterrupt(digitalPinToInterrupt(BTN_PIN), btnISR, FALLING);
-    sleep_cpu();                          // activating sleep mode
+    sleep_cpu(); // activating sleep mode
     // Restore interrupt to CHANGE mode
     detachInterrupt(digitalPinToInterrupt(BTN_PIN));
-    Serial.println(F("Just Woke Up!"));   // next line of code executed after the interrupt
+    Serial_println(F("Just Woke Up!")); // next line of code executed after the interrupt
     sleep_disable();
     attachInterrupt(digitalPinToInterrupt(BTN_PIN), btnISR, CHANGE);
     isClicking = false;
@@ -215,11 +227,11 @@ void handleLongPressStart()
 void setup()
 {
     delay(1000); // power-up safety delay
-    Serial.begin(9600);
+    Serial_begin(9600);
 
     pinMode(LED_BUILTIN, OUTPUT);
     // pin mode i
-    //pinMode(BTN_PIN, INPUT_PULLUP);
+    // pinMode(BTN_PIN, INPUT_PULLUP);
     // attaching a interrupt to pin D2
     attachInterrupt(digitalPinToInterrupt(BTN_PIN), btnISR, CHANGE);
 
@@ -228,7 +240,6 @@ void setup()
     btn.attachMultiClick(handleMultiClick);
     btn.setClickMs(500);
     btn.attachLongPressStart(handleLongPressStart);
-    
 
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
     FastLED.setBrightness(BRIGHTNESS);
@@ -242,17 +253,19 @@ void setup()
     listIdx = EEPROM.read(1) % ARRAY_SIZE(list);
     list[listIdx]->Set(EEPROM.read(2));
 
-    Serial.println(F("FastLED started"));
-    Serial.println(F("Ver 24.12.22.12"));
+    Serial_println(F("FastLED started"));
+    Serial_println(F("Ver 24.12.22.15"));
     listInfo();
     listInfoLeds();
+    if (randomList)
+        listInfoRndLeds();
 }
 
 void loop()
 {
     if (isSleeping)
     {
-        Serial.println(F("Wake info:"));
+        Serial_println(F("Wake info:"));
         listInfo();
         isSleeping = false;
     }

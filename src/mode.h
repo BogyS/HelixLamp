@@ -5,6 +5,7 @@
 
 #include <Arduino.h>
 #include <FastLED.h>
+#include "serial_config.h"
 
 class Mode
 {
