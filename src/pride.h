@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef Pride2015_h
 #define Pride2015_h
 

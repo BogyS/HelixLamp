@@ -1,5 +1,7 @@
-#ifndef LEDCONFIG_H
-#define LEDCONFIG_H
+#pragma once
+
+#ifndef LED_CONFIG_H
+#define LED_CONFIG_H
 
 #include <FastLED.h>
 
@@ -20,4 +22,4 @@ extern struct CRGB leds[NUM_LEDS];
 // Define a function pointer type for void-returning functions
 typedef void (*fnPtrVoid)();
 
-#endif // LEDHANDLER_H
+#endif // LED_CONFIG_H

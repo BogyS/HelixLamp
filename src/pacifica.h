@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef Pacifica_H_
 #define Pacifica_H_
 

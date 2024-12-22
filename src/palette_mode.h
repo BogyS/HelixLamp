@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef PALETTE_MODE_H_
 #define PALETTE_MODE_H_
 

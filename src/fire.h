@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef Fire_2012_
 #define Fire_2012_
 

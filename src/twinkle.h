@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef TwinkleFox_h
 #define TwinkleFox_h
 

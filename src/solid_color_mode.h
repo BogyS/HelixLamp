@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef SOLID_COLOR_MODE_H_
 #define SOLID_COLOR_MODE_H_
 

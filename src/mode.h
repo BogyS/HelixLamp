@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef all_mode_h
 #define all_mode_h
 

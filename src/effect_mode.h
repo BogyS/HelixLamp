@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef EFFECT_MODE_H_
 #define EFFECT_MODE_H_
 
