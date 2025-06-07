@@ -25,7 +25,7 @@ It uses an **Arduino Nano** and the **FastLED** library to create dynamic LED li
 
 ## 🕹️ How to Use
 
-See full usage instructions here 👉 [USAGE.md](./USAGE.md)
+See full usage instructions here 👉 [USAGE.md](./Doc/USAGE.md)
 
 
 

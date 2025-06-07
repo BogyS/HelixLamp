@@ -92,4 +92,5 @@ To conserve power or turn off the lamp:
 - Single press to wake it up.
 
 ---
+![Lamp powered on](./Lamp.jpg)
 
