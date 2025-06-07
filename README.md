@@ -15,7 +15,7 @@ It uses an **Arduino Nano** and the **FastLED** library to create dynamic LED li
 - Arduino Nano (or compatible)
 - WS2812 LED strip
 - 5V USB power supply
-- Jumper wires, 330Ω resistor (on DIN line), 1000µF capacitor (recommended), push button
+- Jumper wires, 330Ω resistor (on DIN line), 470µF capacitor, push button
 - 3D printed parts: [Printables model link](https://www.printables.com/model/62043-rgb-double-helix-lamp-easyprint)
 
 ## 💡 Libraries Used
