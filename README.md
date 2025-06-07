@@ -5,17 +5,16 @@ It uses an **Arduino Nano** and the **FastLED** library to create dynamic LED li
 
 ## 🛠️ Project Overview
 
-- Arduino code to control individually addressable RGB LEDs (WS2812 or similar)
+- Arduino code to control individually addressable RGB LEDs (WS2812B)
 - Multiple lighting effects (rainbow, fade, color transitions, etc.)
 - 3D printed enclosure (external source)
-- Simple and clean hardware setup
 
 ## 📦 What You Need
 
 - Arduino Nano (or compatible)
 - WS2812 LED strip
 - 5V USB power supply
-- Jumper wires, 330Ω resistor (on DIN line), 470µF capacitor, push button
+- 330Ω resistor (on DIN line), 470µF capacitor, push button, USB connector
 - 3D printed parts: [Printables model link](https://www.printables.com/model/62043-rgb-double-helix-lamp-easyprint)
 
 ## 💡 Libraries Used
