@@ -9,6 +9,9 @@ It uses an **Arduino Nano** and the **FastLED** library to create dynamic LED li
 - Multiple lighting effects (rainbow, fade, color transitions, etc.)
 - 3D printed enclosure (external source)
 
+This project has been continued and improved in a new repository:  
+[HelixLamp ESP32 C3](https://github.com/BogyS/HelixLamp_ESP32_C3)
+
 ## 📦 What You Need
 
 - Arduino Nano (or compatible)
